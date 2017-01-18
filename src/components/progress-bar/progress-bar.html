@@ -4,5 +4,6 @@
   See https://angular.io/docs/ts/latest/api/core/index/ComponentMetadata-class.html
   for more info on Angular 2 Components.
 -->
-
-{{current}}
+<div class="progress-container">
+  <div class="progress" [style.background-color]="background" [style.width]="current + '%'">{{current}} de {{totalSeconds}}</div>
+</div>

@@ -11,24 +11,41 @@ import { Component,Input,Output,EventEmitter } from '@angular/core';
   templateUrl: 'progress-bar.html'
 })
 export class ProgressBar {
-  @Input('total') totalSeconds:number = 100;
-  @Input('interval') intervalSeconds:number = 1;
-  @Output() refreshEvent = new EventEmitter();
+  @Input() totalSeconds:number;
+  @Input() intervalSeconds:number;
+  @Input() background:string;
+  @Output() onRefresh = new EventEmitter();
+  @Output() onFinish = new EventEmitter();
   
   text: string;
   current: number;
-  step: number;
+  step:number;
+  
   constructor() {
     console.log('Hello ProgressBar Component');
-    this.text = 'Hello World';
-    this.step = this.totalSeconds / this.intervalSeconds;
-    this.current = this.totalSeconds / this.intervalSeconds;
+    this.text = 'Hello World';  
+    
   }
-
+  ngAfterViewInit(){
+    console.log('ionViewDidLoad')
+    this.step=(this.intervalSeconds*100)/this.totalSeconds
+    console.log(this.totalSeconds);
+    console.log(this.intervalSeconds);
+    console.log(this.step);
+    this.current = 0;
+    this.eachSecond();
+  }
   eachSecond(){
     let i = setInterval(()=>{
-      this.refreshEvent.emit(this.current);
-      this.current = this.current + this.step;
+      console.log('interval');
+      this.onRefresh.emit(this.current);
+      if(Math.round(this.current + this.step)<100)
+        this.current=Math.round(this.current + this.step);
+      else{
+        clearInterval(i);
+        this.current=100;
+        this.onFinish.emit(true);
+      }
     },this.intervalSeconds*1000);
   }
 
